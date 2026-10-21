@@ -30,7 +30,7 @@ public:
     CameraSource& operator=(const CameraSource&) = delete;
     CameraSource(CameraSource&&) = delete;
     CameraSource& operator= (CameraSource&&) = delete;
-    CameraSource(const std::string& device, int width, int height, uint32_t pixel_format);
+    CameraSource(const std::string& device, ImageConfig& cfg);
     int start(BufferPool& pool, SPSC_q<CamFrame, cam_queue_size>& to_decode, 
         SPSC_q<int, cam_queue_size>& cam_done);
     void captureLoop(std::stop_token st);
@@ -42,14 +42,16 @@ private:
     int requestBuffers();
     int queueBuffer(int index);
     
-    int width{0};
-    int height{0};
+    //int width{0};
+    //int height{0};
+    //uint32_t pixel_format{0};
     int v4l2_bytesperline{0};
     int v4l2_sizeimage{0};
 
     int fd{-1}; //descriptor for camera device
     std::string device{};
-    uint32_t pixel_format{0};
+
+    ImageConfig& cfg;
     
     BufferPool* pool{nullptr};
     SPSC_q<CamFrame, cam_queue_size>* to_decode{nullptr};

@@ -147,7 +147,7 @@ void MppDecoder::decodeLoop(std::stop_token st) {
         ready->push(idx);
     }
 
-    //close?
+    ready->close();
 }
 
 int MppDecoder::get_w() const {

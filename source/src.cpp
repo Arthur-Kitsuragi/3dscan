@@ -5,15 +5,15 @@ int CameraSource::setFormat() {
     memset(&fmt, 0, sizeof(fmt));
     
     fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    fmt.fmt.pix.width = width;
-    fmt.fmt.pix.height = height;
-    fmt.fmt.pix.pixelformat = pixel_format;
+    fmt.fmt.pix.width = cfg.width;
+    fmt.fmt.pix.height = cfg.height;
+    fmt.fmt.pix.pixelformat = static_cast<uint32_t>(cfg.pixel_format);
     fmt.fmt.pix.field = V4L2_FIELD_NONE;
     
     if (ioctl(fd, VIDIOC_S_FMT, &fmt) < 0) return -1; 
 
-    width = fmt.fmt.pix.width;
-    height = fmt.fmt.pix.height;
+    cfg.width = fmt.fmt.pix.width;
+    cfg.height = fmt.fmt.pix.height;
     v4l2_bytesperline = fmt.fmt.pix.bytesperline;
     v4l2_sizeimage = fmt.fmt.pix.sizeimage;
 
@@ -38,8 +38,8 @@ int CameraSource::requestBuffers() {
     return 0;
 }
 
-CameraSource::CameraSource(const std::string& device, int width, int height, uint32_t pixel_format) 
-    : device(device), width(width), height(height), pixel_format(pixel_format) {
+CameraSource::CameraSource(const std::string& device, ImageConfig& cfg) 
+    : device(device), cfg(cfg) {
 }
 
 int CameraSource::configure() {
